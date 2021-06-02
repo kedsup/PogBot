@@ -1,47 +1,21 @@
-const tmi = require('tmi.js');
+const client = require('./client.js')
+const commandResolver = require('./commandResolver.js')
+client.connect()
 
-// Define configuration options
-const opts = {
-  identity: {
-    username: "firstpogbot",
-    password: "y282oqi9u3zh5mws407w7pnruo8wa9"
-  },
-  channels: [
-    "kedsup"
-  ]
-};
-// Create a client with our options
-const client = new tmi.client(opts);
+// Commands
+client.on('chat', (channel, user, message, self) => {
+  if (self) return // bot message
 
-// Register our event handlers (defined below)
-client.on('message', onMessageHandler);
-client.on('connected', onConnectedHandler);
-
-// Connect to Twitch:
-client.connect();
-
-// Called every time a message comes in
-function onMessageHandler (target, context, msg, self) {
-  if (self) { return; } // Ignore messages from the bot
-
-  // Remove whitespace from chat message
-  const commandName = msg.trim();
-
-  // If the command is known, let's execute it
-  if (commandName === '!dice') {
-    const num = rollDice();
-    client.say(target, `You rolled a ${num}`);
-    console.log(`* Executed ${commandName} command`);
-  } else {
-    console.log(`* Unknown command ${commandName}`);
+  // if message has symbol that means command - !
+  if ((message.indexOf('!')) !== -1) {
+    commandResolver.resolve(channel, user, message)
   }
-}
-// Function called when the "dice" command is issued
-function rollDice () {
-  const sides = 6;
-  return Math.floor(Math.random() * sides) + 1;
-}
-// Called every time the bot connects to Twitch chat
-function onConnectedHandler (addr, port) {
-  console.log(`* Connected to ${addr}:${port}`);
-}
+
+  setInterval( ()=> {
+    client.say(channel, "Please, be polite!");
+  }, 30000);
+});
+
+client.on("join", (channel, user, message, self) => {
+  client.action(channel, user + " , glad to see you!");
+});

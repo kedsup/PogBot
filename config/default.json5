@@ -1,0 +1,19 @@
+{
+  options: {
+    debug: true
+  },
+  connection: {
+    cluster: "aws",
+    reconnect: true
+  },
+  bot: {
+    username: "firstpogbot",
+    oauth_token: "y282oqi9u3zh5mws407w7pnruo8wa9"
+  },
+  channel: "kedsup",
+  social:{
+      facebook: "I have no facebook",
+      twitter: "I have no twitter",
+      instagram: "Here you go! https://www.instagram.com/_kedsup/"
+  }
+}
