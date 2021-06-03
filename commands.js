@@ -1,77 +1,68 @@
-const config = require('config')
-const client = require('./client.js')
-const activeChannel = config.get('channel')
-let state = null;
+const config = require('config');
+const client = require('./client.js');
 
-const clear = () => {
-  if (!checkModeratorPermission()) return
+const activeChannel = config.get('channel');
 
-  client.clear(config.get('channel'))
-}
+const clear = (messageInfo) => {
+  if (!checkModeratorPermission(messageInfo)) return;
+
+  client.clear(config.get('channel'));
+};
+
+const tossCoin = () => {
+  const sides = ['eagle', 'tails'];
+  return sides[Math.floor(Math.random() * 2)];
+};
 
 const coin = () => {
-  function tossCoin () {
-  const sides = ['eagle', 'tails'];
-  return sides[Math.floor(Math.random() * 2)]
-}
   const res = tossCoin();
   client.say(activeChannel, `You’ve got ${res}`);
-}
+};
 
-
-const dice = () => {
-  function rollDice () {
+const rollDice = () => {
   const sides = 6;
   return Math.floor(Math.random() * sides) + 1;
-}
+};
+
+const dice = () => {
   const num = rollDice();
   client.say(activeChannel, `You rolled a ${num}`);
-}
+};
 
-const timeOutUser = (args) => {
-  if (!checkModeratorPermission()) return
+const timeOutUser = (args, messageInfo) => {
+  if (!checkModeratorPermission(messageInfo)) return;
 
-  let targetUser = args[0]
-  let timeOutDuration = args[1]
+  const [targetUser, timeOutDuration] = args;
 
-  client.timeout(activeChannel, targetUser, timeOutDuration)
-  client.action(activeChannel, targetUser + ' now u have timeout mode! Duration: ' + timeOutDuration)
-}
+  client.timeout(activeChannel, targetUser, timeOutDuration);
+  client.action(
+    activeChannel,
+    `${targetUser} now u have timeout mode! Duration: ${timeOutDuration}`
+  );
+};
 
 const callCommand = (command, messageInfo) => {
-  state = messageInfo;
-
-  switch (command.command) {
-    case 'to':
-      timeOutUser(command.args)
-      break
-    case 'clear':
-      clear();
-      break
-    case 'fb':
-      client.action(activeChannel, config.get('social.facebook'))
-      break
-    case 'twt':
-      client.action(activeChannel, config.get('social.twitter'))
-      break
-    case 'inst':
-      client.action(activeChannel, config.get('social.instagram'))
-      break
-    case 'coin':
-      coin()
-      break 
-    case 'dice':
-      dice()
-      break
-    default:
-      break
+  const commandToAction = {
+    'to': () => timeOutUser(command.args, messageInfo),
+    'clear': () => clear(messageInfo),
+    'fb': () => client.action(activeChannel, config.get('social.facebook')),
+    'twt': () =>  client.action(activeChannel, config.get('social.twitter')),
+    'inst': () => client.action(activeChannel, config.get('social.instagram')),
+    'coin': () => coin(),
+    'dice': () => dice(),
   }
-}
 
-const checkModeratorPermission = () => state.user.mod || state.user.username === activeChannel
+  const action = commandToAction[command.command];
+  if(!action) return;
+
+  action();
+};
+
+const checkModeratorPermission = (state) =>
+  state.user.mod || state.user.username === activeChannel;
 
 module.exports = {
   call: (command, messageInfo) => {
-    callCommand(command, messageInfo)
-  }
-}
+    callCommand(command, messageInfo);
+  },
+};
