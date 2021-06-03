@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "config": "^3.3.6",
+    "tmi.js": "^1.8.3"
+  },
+  "name": "pogbot",
+  "description": "simple twitch bot",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kedsup/PogBot.git"
+  },
+  "author": "kedsup",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kedsup/PogBot/issues"
+  },
+  "homepage": "https://github.com/kedsup/PogBot#readme"
+}
