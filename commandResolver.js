@@ -1,15 +1,9 @@
+'use strict';
+
 const commands = require('./commands.js');
 
-const commandResolver = (channel, user, message) => {
-  const command = recognizeCommand(message);
-
-  if (!command) return;
-
-  commands.call(command, { channel, user, message });
-};
-
-const recognizeCommand = (message) => {
-  const regex = /\!(.*?)$/gm;
+const recognizeCommand = message => {
+  const regex = /!(.*?)$/gm;
   const fullCommand = regex.exec(message);
 
   if (fullCommand) {
@@ -25,6 +19,15 @@ const recognizeCommand = (message) => {
   }
 
   return false;
+};
+
+
+const commandResolver = (channel, user, message) => {
+  const command = recognizeCommand(message);
+
+  if (!command) return;
+
+  commands.call(command, { channel, user, message });
 };
 
 module.exports = {

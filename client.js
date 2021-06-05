@@ -1,6 +1,8 @@
-const tmi = require ('tmi.js');
-const config = require('./config.js')
+'use strict';
 
-const client = new tmi.client(config);
+const tmi = require('tmi.js');
+const config = require('./config.js');
 
-module.exports = client
+const client = new tmi.Client(config);
+
+module.exports = client;

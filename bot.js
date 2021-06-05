@@ -1,3 +1,5 @@
+'use strict';
+
 const client = require('./client.js');
 const commandResolver = require('./commandResolver.js');
 

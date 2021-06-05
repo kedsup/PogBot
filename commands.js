@@ -1,9 +1,14 @@
+'use strict';
+
 const config = require('config');
 const client = require('./client.js');
 
 const activeChannel = config.get('channel');
 
-const clear = (messageInfo) => {
+const checkModeratorPermission = state =>
+  state.user.mod || state.user.username === activeChannel;
+
+const clear = messageInfo => {
   if (!checkModeratorPermission(messageInfo)) return;
 
   client.clear(config.get('channel'));
@@ -50,16 +55,13 @@ const callCommand = (command, messageInfo) => {
     'inst': () => client.action(activeChannel, config.get('social.instagram')),
     'coin': () => coin(),
     'dice': () => dice(),
-  }
+  };
 
   const action = commandToAction[command.command];
-  if(!action) return;
+  if (!action) return;
 
   action();
 };
-
-const checkModeratorPermission = (state) =>
-  state.user.mod || state.user.username === activeChannel;
 
 module.exports = {
   call: (command, messageInfo) => {
